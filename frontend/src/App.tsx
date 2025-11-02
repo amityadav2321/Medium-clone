@@ -6,6 +6,7 @@ import SignIn from './pages/SignIn';
 import Blogs from './pages/Blogs';
 import BlogDetail from './pages/BlogDetail';
 import CreateOrEditBlog from './pages/createBlog';
+import { Navigate } from "react-router-dom";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/write" element={<CreateOrEditBlog />} />       {/* ✅ Create */}
         <Route path="/write/:id" element={<CreateOrEditBlog />} /> 
         <Route path="/blogs" element={<Blogs/>}  />
+        <Route path="/" element={<Navigate to="/signup" replace />} />
       </Routes>
     
     </BrowserRouter>
