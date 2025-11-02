@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API_BASE_URL = import.meta.env.VITE_API_URL;
@@ -24,7 +24,7 @@ export default function AppBar() {
   const handleLogout = async () => {
     try {
      await axios.post(`${API_BASE_URL}/api/v1/user/signout`, {}, { withCredentials: true });
-     
+
       // ✅ Remove local state
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("token");
