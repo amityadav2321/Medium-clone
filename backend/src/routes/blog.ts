@@ -6,36 +6,37 @@ import { createBlogInput, updateBlogInput } from '@amityadav2005/medium-blog';
 
 export const blogRouter = new Hono();
 
-blogRouter.use('/*',async (c,next)=>{
-
-  //get the header 
-  //verify the header 
-  // if the header is correct ,we need can proceed
-  //if not ,we return the uer the 403 status code
+blogRouter.use('/*', async (c, next) => {
   try {
-    const authHeader= c.req.header("Authorization") || "";
+    // ✅ 1. First, check for token in cookies
+    const cookieHeader = c.req.header('Cookie') || '';
+    const token = cookieHeader
+      .split('; ')
+      .find((row) => row.startsWith('token='))
+      ?.split('=')[1];
 
-  const token= authHeader.split(" ")[1];
+    if (!token) {
+      c.status(403);
+      return c.json({ error: 'You are not login, Please Login!' });
+    }
 
-  //@ts-ignore
-  const user= await verify(token,c.env.JWT_SECRET);
+    // ✅ 2. Verify JWT
+    // @ts-ignore
+    const user = await verify(token, c.env.JWT_SECRET);
 
-  if(user){
-    //@ts-ignore
-    c.set("userId", user.id);
-    await next();
-  }
-  else{
-    c.status(403)
-    return c.json({error:"unauthorized"})
-  }
- }catch(e){
+    if (user) {
+      // @ts-ignore
+      c.set('userId', user.id);
+      await next();
+    } else {
+      c.status(403);
+      return c.json({ error: 'Unauthorized' });
+    }
+  } catch (e) {
     c.status(403);
-    return c.json({
-        error:"You are not login, Please Login!"
-    })
- }
-})
+    return c.json({ error: 'You are not login, Please Login!' });
+  }
+});
 
 blogRouter.post('/', async(c) => {
 const body = await c.req.json();
